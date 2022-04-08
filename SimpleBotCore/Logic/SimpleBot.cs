@@ -1,4 +1,6 @@
-﻿using SimpleBotCore.Bot;
+﻿using MongoDB.Bson;
+using MongoDB.Driver;
+using SimpleBotCore.Bot;
 using SimpleBotCore.Repositories;
 using System;
 using System.Collections.Generic;
@@ -10,10 +12,11 @@ namespace SimpleBotCore.Logic
     public class SimpleBot : BotDialog
     {
         IUserProfileRepository _userProfile;
-
-        public SimpleBot(IUserProfileRepository userProfile)
+        IPerguntasRepository _perguntasRepository;
+        public SimpleBot(IUserProfileRepository userProfile, IPerguntasRepository perguntasRepository)
         {
             _userProfile = userProfile;
+            _perguntasRepository = perguntasRepository;
         }
 
         protected async override Task BotConversation()
@@ -74,7 +77,9 @@ namespace SimpleBotCore.Logic
                     await WriteAsync("Processando...");
 
                     // FAZER: GRAVAR AS PERGUNTAS EM UM BANCO DE DADOS
-                    await Task.Delay(5000);
+                    //await Task.Delay(5000);
+
+                    _perguntasRepository.GravaPergunta(texto);
 
                     await WriteAsync("Resposta não encontrada");
                 }
