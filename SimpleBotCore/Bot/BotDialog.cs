@@ -24,7 +24,7 @@ namespace SimpleBotCore.Bot
 
         public void Init(Activity activity)
         {
-            _userId = activity.From.Id;
+            _userId = activity.From.Id.Replace("-","").Substring(0,24);
             _conversationid = new ConversationAccount() { Id = activity.Conversation.Id };
             _serviceUrl = new Uri(activity.ServiceUrl);
             _userAccount = new ChannelAccount() { Role = RoleTypes.User, Id = _userId, Name = "User" };

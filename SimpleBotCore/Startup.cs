@@ -28,9 +28,9 @@ namespace SimpleBotCore
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            string connectionStringMongo = Configuration["MongoConnection"];
+            string connectionStringMongo = Configuration["MongoConnection"]; //pegar o secret
             
-            services.AddSingleton<IUserProfileRepository>(new UserProfileMockRepository());
+            services.AddSingleton<IUserProfileRepository>(new UserProfileRepository(new MongoDB.Driver.MongoClient(connectionStringMongo)));
             services.AddSingleton<IBotDialogHub, BotDialogHub>();
             services.AddSingleton<BotDialog, SimpleBot>();
             services.AddSingleton<IPerguntasRepository>(new PerguntasRepository(new MongoDB.Driver.MongoClient(connectionStringMongo)));

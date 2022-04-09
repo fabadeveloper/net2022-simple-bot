@@ -1,4 +1,6 @@
-﻿using System;
+﻿using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -7,14 +9,21 @@ namespace SimpleBotCore.Logic
 {
     public class SimpleUser
     {
-        public string Id { get; }
+        [BsonRepresentation(BsonType.ObjectId)]
+        public string id { get; }
+        [BsonElement]
+		public string Codigo { get; set; }
+		[BsonElement]
         public string Nome { get; set; }
+        [BsonElement]
         public int Idade { get; set; }
+        [BsonElement]
         public string Cor { get; set; }
 
         public SimpleUser(string userId)
         {
-            this.Id = userId ?? throw new ArgumentNullException(nameof(userId));
+            this.id = userId ?? throw new ArgumentNullException(nameof(userId));
+            this.Codigo = userId;
         }
     }
 }

@@ -38,7 +38,6 @@ namespace SimpleBotCore.Logic
                     $"vejo que cadastrou sua cor preferida como {user.Cor}");
             }
 
-
             if( user.Nome == null )
             {
                 await WriteAsync("Qual o seu nome?");
@@ -75,9 +74,6 @@ namespace SimpleBotCore.Logic
                 if( texto.EndsWith("?") )
                 {
                     await WriteAsync("Processando...");
-
-                    // FAZER: GRAVAR AS PERGUNTAS EM UM BANCO DE DADOS
-                    //await Task.Delay(5000);
 
                     _perguntasRepository.GravaPergunta(texto);
 

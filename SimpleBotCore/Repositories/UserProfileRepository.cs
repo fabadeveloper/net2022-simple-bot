@@ -1,18 +1,27 @@
-﻿using SimpleBotCore.Logic;
+﻿using MongoDB.Bson;
+using MongoDB.Driver;
+using MongoDB.Driver.Linq;
+using SimpleBotCore.Logic;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 
 namespace SimpleBotCore.Repositories
 {
-    public class UserProfileMockRepository : IUserProfileRepository
-    {
-        Dictionary<string, SimpleUser> _users = new Dictionary<string, SimpleUser>();
+	public class UserProfileRepository : IUserProfileRepository
+	{
+        public readonly IMongoClient client;
+
+        public UserProfileRepository(IMongoClient _client)
+        {
+            client = _client;
+        }
 
         public SimpleUser TryLoadUser(string userId)
         {
-            if( Exists(userId) )
+            if (Exists(userId))
             {
                 return GetUser(userId);
             }
@@ -22,7 +31,7 @@ namespace SimpleBotCore.Repositories
 
         public SimpleUser Create(SimpleUser user)
         {
-            if ( Exists(user.id) )
+            if (Exists(user.id))
                 throw new InvalidOperationException("Usuário ja existente");
 
             SaveUser(user);
@@ -77,18 +86,45 @@ namespace SimpleBotCore.Repositories
 
         private bool Exists(string userId)
         {
-            return _users.ContainsKey(userId);
+            if (GetUser(userId) is null)
+                return false;
+            else
+                return true;
         }
 
         private SimpleUser GetUser(string userId)
         {
-            return _users[userId];
+            var database = client.GetDatabase("BotEmulator");
+            IMongoCollection<SimpleUser> colSimpleUser = database.GetCollection<SimpleUser>("SimpleUser");
+
+            var filter = Builders<SimpleUser>.Filter.Where(m=> m.Codigo == userId);
+            var simpleUser = colSimpleUser.Find(filter).FirstOrDefault();
+            
+            if (simpleUser != null)
+            {
+                return simpleUser;
+            }
+
+            return null;
         }
 
         private void SaveUser(SimpleUser user)
         {
-            _users[user.id] = user;
-        }
-    }
-}
+            var database = client.GetDatabase("BotEmulator");
+            IMongoCollection<SimpleUser> colSimpleUser = database.GetCollection<SimpleUser>("SimpleUser");
 
+            var filter = Builders<SimpleUser>.Filter.Where(m => m.Codigo == user.Codigo);
+            var simpleUser = colSimpleUser.Find(filter).FirstOrDefault();
+
+            if (simpleUser != null)
+            {
+                ReplaceOneResult result = colSimpleUser.ReplaceOne(filter, user);
+            }
+            else
+            {
+                var data = database.GetCollection<SimpleUser>("SimpleUser");
+                data.InsertOne(user);
+            }
+        }
+        	}
+}

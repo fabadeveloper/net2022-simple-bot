@@ -21,8 +21,8 @@ namespace SimpleBotCore.Bot
         // Distribui as mensagens entre os bots
         public Task ProcessAsync(Activity activity)
         {
-            string userId = activity.From.Id;
-
+            string userId = activity.From.Id.Replace("-", "").Substring(0, 24);
+            
             // Inicia um bot para novos usuarios
             if(!_activeBots.ContainsKey(userId))
             {
