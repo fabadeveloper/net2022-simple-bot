@@ -97,7 +97,7 @@ namespace SimpleBotCore.Repositories
             var database = client.GetDatabase("BotEmulator");
             IMongoCollection<SimpleUser> colSimpleUser = database.GetCollection<SimpleUser>("SimpleUser");
 
-            var filter = Builders<SimpleUser>.Filter.Where(m=> m.Codigo == userId);
+            var filter = Builders<SimpleUser>.Filter.Eq("id", ObjectId.Parse(userId));
             var simpleUser = colSimpleUser.Find(filter).FirstOrDefault();
             
             if (simpleUser != null)
@@ -113,7 +113,7 @@ namespace SimpleBotCore.Repositories
             var database = client.GetDatabase("BotEmulator");
             IMongoCollection<SimpleUser> colSimpleUser = database.GetCollection<SimpleUser>("SimpleUser");
 
-            var filter = Builders<SimpleUser>.Filter.Where(m => m.Codigo == user.Codigo);
+            var filter = Builders<SimpleUser>.Filter.Eq("id", ObjectId.Parse(user.id));
             var simpleUser = colSimpleUser.Find(filter).FirstOrDefault();
 
             if (simpleUser != null)

@@ -10,10 +10,8 @@ namespace SimpleBotCore.Logic
     public class SimpleUser
     {
         [BsonRepresentation(BsonType.ObjectId)]
-        public string id { get; }
+        public string id { get; set; }
         [BsonElement]
-		public string Codigo { get; set; }
-		[BsonElement]
         public string Nome { get; set; }
         [BsonElement]
         public int Idade { get; set; }
@@ -23,7 +21,6 @@ namespace SimpleBotCore.Logic
         public SimpleUser(string userId)
         {
             this.id = userId ?? throw new ArgumentNullException(nameof(userId));
-            this.Codigo = userId;
         }
     }
 }
